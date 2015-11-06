@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <random>
+
 using namespace std;
 
 int main()
@@ -42,6 +44,12 @@ int main()
 	bool input;
 	cin >> input;
 	int seq = 0;
+
+
+
+	default_random_engine generator;
+	normal_distribution<double> distribution(0.0, 1.0);
+
 	while (true)
 	{
 		seq += 1;
@@ -50,7 +58,7 @@ int main()
 			multiplier = 1;
 		else
 			multiplier = -1;
-		mem[0] += 1*multiplier;
+		mem[0] += 1*multiplier ;
 		mem[1] += 2*multiplier;
 		mem[2] += 1*multiplier;
 
@@ -60,19 +68,23 @@ int main()
 		mem[2] = 0;
 
 		cout << sequence_no << " ";
+		double number = distribution(generator);
+		int add;
+		if (number < 0.000001)
+			add = -1;
+		else add = 1;
+		sequence_no += add;
 
 		if (seq == 1){
 			cell[0][1] = cell[0][0] + pow(sequence_no + 4, 2);
 			cell[1][1] = cell[1][0] + pow(sequence_no + 2, 2);
-			//cout << "Possibilities: 0 1" << endl;
 			cout << "0 (" << cell[0][1] << "), 1 (" << cell[1][1] << ") ";
 		}
 		else if (seq == 2){
-			cell[0][1] = cell[0][0] + pow(sequence_no + 4, 1);
-			cell[1][1] = cell[1][0] + pow(sequence_no + 2, 2);
-			cell[2][1] = cell[2][0] + pow(sequence_no, 2);
-			cell[3][1] = cell[3][0] + pow(sequence_no - 2, 2);
-			//cout << "Possibilities: 00 01 10 11" << endl;
+			cell[0][1] = cell[0][0] + pow(sequence_no + 4, 2) ;
+			cell[1][1] = cell[0][0] + pow(sequence_no + 2, 2);
+			cell[2][1] = cell[1][0] + pow(sequence_no, 2);
+			cell[3][1] = cell[1][0] + pow(sequence_no - 2, 2);
 			cout << "00 (" << cell[0][1] << "), 01 (" << cell[1][1];
 			cout << "), 10 (" << cell[2][1] << "), 11 (" << cell[3][1] << ") ";
 		}
@@ -84,7 +96,7 @@ int main()
 				}
 			}
 			for (int i = 0; i < (1 << memory); i++){
-				if (temp[i >> 1][i] < temp[(i >> 1) + 2][i]){
+				if (temp[i >> 1][i] + cell[i >> 1][0] < temp[(i >> 1) + 2][i] + cell[(i >> 1) + 2][0]){
 					next_msg[i] = message[i >> 1] + to_string(i % 2);
 					cell[i][1] = cell[i >> 1][0] + temp[i >> 1][i];
 				}
@@ -96,7 +108,8 @@ int main()
 		}
 
 		for (int i = 0; i < (1 << memory); i++){
-			cell[i][0] = cell[i][1], cell[i][1] = INT_MAX;
+			cell[i][0] = cell[i][1];
+			cell[i][1] = INT_MAX;
 			if (seq > 2){
 				message[i] = next_msg[i];
 				cout << message[i] << " (" << cell[i][0] << "), " ;
