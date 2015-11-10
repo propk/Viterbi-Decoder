@@ -10,12 +10,9 @@ using namespace std;
 int main()
 {
 	const int memory = 2;
-	/*cout << "Enter Decoder Memory States: ";
-	cin >> memory;*/
 	int sequence_no = -3;
 	int mem[3] = {-3, -1, 0};
 
-	// cout << "Initial default sequence numbers : -1";
 
 	int **cell = new int*[1 << memory], **edge = new int*[1 << memory], **temp = new int*[1 << memory];
 
@@ -67,12 +64,12 @@ int main()
 		mem[1] = mem[2];
 		mem[2] = 0;
 
-		cout << sequence_no << " ";
+		cout << "ISI seq: " << sequence_no << endl;;
 		double number = distribution(generator);
 		int add;
 		if (number < 0.000001)
-			add = -1;
-		else add = 1;
+			add = floor(number);
+		else add = ceil(number);
 		sequence_no += add;
 
 		if (seq == 1){
@@ -114,7 +111,7 @@ int main()
 				message[i] = next_msg[i];
 				cout << message[i] << " (" << cell[i][0] << "), " ;
 			}
-		} cout <<  endl;
+		} cout << "\n"<< endl;
 		cin >> input;
 	}
 	return 0;
